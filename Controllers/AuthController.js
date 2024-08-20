@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
     const token = generateToken(user);
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "Lax", // Adjust SameSite attribute as needed
+      sameSite: "None", // Adjust SameSite attribute as needed
       // secure: true, // Use secure flag only if using HTTPS
     });
 
