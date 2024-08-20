@@ -9,13 +9,13 @@ const flash = require("connect-flash");
 // Import Mongoose models
 const User = require("./models/Usermodel");
 const Appointment = require("./models/Appointmentmodel");
-const { IsLogin } = require("../backend/Middleware/IsLogin");
+const { IsLogin } = require("./Middleware/IsLogin");
 const {
   registerUser,
   loginUser,
   logoutUser,
   BookAppointment,
-} = require("../backend/Controllers/AuthController");
+} = require("./Controllers/AuthController");
 
 // Initialize the app
 const app = express();
