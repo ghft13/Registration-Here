@@ -26,8 +26,9 @@ app.use(bodyParser.json());
 
 app.use(
   cors({
-   origin: 'http://localhost:3000', // Your frontend URL
-  credentials: true
+    //origin: 'http://localhost:3000', // Your frontend URL
+    origin: "https://register-1825.netlify.app",
+    credentials: true,
   })
 );
 
