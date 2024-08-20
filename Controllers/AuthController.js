@@ -28,6 +28,8 @@ const registerUser = async (req, res) => {
       path: "/",
     });
 
+    console.log(token)
+
     res.status(201).json({
       message: "User registered successfully",
       type: "success",
