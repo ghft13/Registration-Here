@@ -43,40 +43,43 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  const { password, email } = req.body;
-
   try {
-    let user = await User.findOne({ email });
+    const { email, password } = req.body;
+
+    // Await the user search
+    let user = await usermodel.findOne({ email });
+
     if (!user) {
-      return res.status(400).json({ message: "User not found", type: "error" });
+      return res.status(401).json({ message: "No user found" });
+      // Use 401 for unauthorized
     }
 
+    // Compare the password
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ message: "Invalid credentials", type: "error" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    // Generate token
     let token = jwt.sign(
       { id: user._id, username: user.username }, // Use user._id
       process.env.JWT_KEY,
       { expiresIn: "1h" } // Optional: set token expiry
     );
 
+    // Send token as a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true in production, false in development
+      secure: true,
       sameSite: "strict",
       maxAge: 3600000, // 1 hour
     });
 
-    return res
-      .status(200)
-      .json({ message: "Login successful", type: "success", token });
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ message: "Server error", type: "error" });
+    // Respond with success
+    res.status(200).json({ message: "Login successful" });
+  } catch (err) {
+    res.status(500).json({ error: err.message }); // Use 500 for server errors
   }
 };
 const logoutUser = (req, res) => {
