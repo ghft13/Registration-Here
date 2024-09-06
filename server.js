@@ -59,7 +59,7 @@ app.get("/api/profile", (req, res) => {
 
 app.post("/api/auth/book-appointment", IsLogin, BookAppointment);
 
-app.get("/api/auth/check-auth", IsLogin, (req, res) => {
+app.get("/api/auth/check-auth", (req, res) => {
   res.status(200).json({ authenticated: true });
 });
 app.post("/api/auth/logout", logoutUser);
