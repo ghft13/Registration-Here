@@ -24,14 +24,11 @@ const app = express();
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-app.use(
-  cors({
-    origin: "http://localhost:3000", // Your frontend URL
-    origin: "https://jay18.netlify.app/",
-
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: "https://jay18.netlify.app/", // Specify the allowed origin
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+app.use(cors(corsOptions));
 
 app.use(
   session({
