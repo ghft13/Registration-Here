@@ -19,14 +19,20 @@ const registerUser = async (req, res) => {
     user.password = await bcrypt.hash(password, salt);
     await user.save();
 
-    const token = generateToken(user);
+    let token = jwt.sign(
+      { id: user._id, username: user.username }, // Use user._id
+      process.env.JWT_KEY,
+      { expiresIn: "1h" } // Optional: set token expiry
+    );
+
+    // Send token as a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // Ensure this is set if using HTTPS
-      sameSite: "None", // Use None for cross-site cookies
+      secure: true,
+      sameSite: "strict",
+      maxAge: 3600000, // 1 hour
     });
 
-    console.log(token)
 
     res.status(201).json({
       message: "User registered successfully",
@@ -54,13 +60,20 @@ const loginUser = async (req, res) => {
         .json({ message: "Invalid credentials", type: "error" });
     }
 
-    const token = generateToken(user);
+    let token = jwt.sign(
+      { id: user._id, username: user.username }, // Use user._id
+      process.env.JWT_KEY,
+      { expiresIn: "1h" } // Optional: set token expiry
+    );
+
+    // Send token as a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure:true,
-     // sameSite: "Lax", // Adjust SameSite attribute as needed
-      // secure: true, // Use secure flag only if using HTTPS
+      secure: true,
+      sameSite: "strict",
+      maxAge: 3600000, // 1 hour
     });
+
 
     return res
       .status(200)
