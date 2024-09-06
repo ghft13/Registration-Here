@@ -1,6 +1,8 @@
 const User = require("../models/Usermodel");
 const Appointment = require("../models/Appointmentmodel");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -37,51 +39,48 @@ const registerUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.error(error.message);
+    console.error("Error registering user:", error); // More descriptive logging
     res.status(500).json({ message: "Server error", type: "error" });
   }
+  
 };
-
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Await the user search
-    let user = await usermodel.findOne({ email });
+    // Corrected variable name
+    let user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({ message: "No user found" });
-      // Use 401 for unauthorized
     }
 
-    // Compare the password
+    // Rest of the code remains the same
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate token
     let token = jwt.sign(
-      { id: user._id, username: user.username }, // Use user._id
+      { id: user._id, username: user.username },
       process.env.JWT_KEY,
-      { expiresIn: "1h" } // Optional: set token expiry
+      { expiresIn: "1h" }
     );
 
-    // Send token as a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
+      secure: true, // Ensure this matches your environment
       sameSite: "strict",
       maxAge: 3600000, // 1 hour
     });
 
-    // Respond with success
     res.status(200).json({ message: "Login successful" });
   } catch (err) {
-    res.status(500).json({ error: err.message }); // Use 500 for server errors
+    res.status(500).json({ error: err.message });
   }
 };
+
 const logoutUser = (req, res) => {
   // Clear the 'token' cookie
   res.clearCookie("token", {

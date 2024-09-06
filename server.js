@@ -10,6 +10,8 @@ const flash = require("connect-flash");
 const User = require("./models/Usermodel");
 const Appointment = require("./models/Appointmentmodel");
 const { IsLogin } = require("./Middleware/IsLogin");
+require('dotenv').config();
+
 const {
   registerUser,
   loginUser,
@@ -24,18 +26,20 @@ const app = express();
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+
 const corsOptions = {
-  origin: "https://jay18.netlify.app/", // Specify the allowed origin
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  origin: "https://jay18.netlify.app", // Removed trailing slash
+  credentials: true,
 };
 app.use(cors(corsOptions));
 
+
 app.use(
   session({
-    secret: "process.env.EXPRESS_SESSION_SECRET",
+    secret: process.env.EXPRESS_SESSION_SECRET, // Remove quotes
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Use 'true' if you're using HTTPS
+    cookie: { secure: false }, // Set to true if using HTTPS
   })
 );
 
