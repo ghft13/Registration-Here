@@ -55,8 +55,8 @@ app.post("/api/auth/register", registerUser);
 
 app.post("/api/auth/login", loginUser);
 
-app.get("/api/profile", IsLogin, async (req, res) => {
-  res.status(200).json({ user: req.user.username });
+app.get("/api/profile", async (req, res) => {
+  res.status(200).json({ user: req.user.username ,type:"success"});
 });
 
 app.post("/api/auth/book-appointment", IsLogin, BookAppointment);
