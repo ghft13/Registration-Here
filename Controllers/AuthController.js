@@ -1,8 +1,6 @@
 const User = require("../models/Usermodel");
 const Appointment = require("../models/Appointmentmodel");
 const bcrypt = require("bcryptjs");
-const generateToken = require("../Utils/GenerateToken");
-
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -33,7 +31,6 @@ const registerUser = async (req, res) => {
       maxAge: 3600000, // 1 hour
     });
 
-
     res.status(201).json({
       message: "User registered successfully",
       type: "success",
@@ -44,6 +41,7 @@ const registerUser = async (req, res) => {
     res.status(500).json({ message: "Server error", type: "error" });
   }
 };
+
 const loginUser = async (req, res) => {
   const { password, email } = req.body;
 
@@ -66,14 +64,12 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" } // Optional: set token expiry
     );
 
-    // Send token as a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // true in production, false in development
       sameSite: "strict",
       maxAge: 3600000, // 1 hour
     });
-
 
     return res
       .status(200)
@@ -91,7 +87,9 @@ const logoutUser = (req, res) => {
     sameSite: "None", // Adjust depending on your setup
   });
 
-  return res.status(200).json({ message: "Logged out successfully", type: "success" });
+  return res
+    .status(200)
+    .json({ message: "Logged out successfully", type: "success" });
 };
 
 const BookAppointment = async (req, res) => {
@@ -101,7 +99,7 @@ const BookAppointment = async (req, res) => {
   try {
     let user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'User not found', type: 'error' });
+      return res.status(400).json({ message: "User not found", type: "error" });
     }
 
     // Create a new appointment
@@ -111,10 +109,12 @@ const BookAppointment = async (req, res) => {
     });
 
     await appointment.save();
-    res.status(201).json({ message: 'Appointment booked successfully', type: 'success' });
+    res
+      .status(201)
+      .json({ message: "Appointment booked successfully", type: "success" });
   } catch (error) {
-    console.error('Error booking appointment:', error);
-    res.status(500).json({ message: 'Internal Server Error', type: 'error' });
+    console.error("Error booking appointment:", error);
+    res.status(500).json({ message: "Internal Server Error", type: "error" });
   }
 };
 module.exports = { registerUser, loginUser, logoutUser, BookAppointment };
