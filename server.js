@@ -10,7 +10,7 @@ const flash = require("connect-flash");
 const User = require("./models/Usermodel");
 const Appointment = require("./models/Appointmentmodel");
 const { IsLogin } = require("./Middleware/IsLogin");
-require('dotenv').config();
+require("dotenv").config();
 
 const {
   registerUser,
@@ -26,13 +26,11 @@ const app = express();
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-
 const corsOptions = {
   origin: "https://jay18.netlify.app", // Removed trailing slash
   credentials: true,
 };
 app.use(cors(corsOptions));
-
 
 app.use(
   session({
@@ -55,8 +53,8 @@ app.post("/api/auth/register", registerUser);
 
 app.post("/api/auth/login", loginUser);
 
-app.get("/api/profile", async (req, res) => {
-  res.status(200).json({ user: req.user.username ,type:"success"});
+app.get("/api/profile", (req, res) => {
+  res.status(200).json({ user: req.user.username, type: "success" });
 });
 
 app.post("/api/auth/book-appointment", IsLogin, BookAppointment);
