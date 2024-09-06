@@ -3,7 +3,6 @@ const Appointment = require("../models/Appointmentmodel");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../Utils/GenerateToken");
 
-// Hello moto
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -23,9 +22,8 @@ const registerUser = async (req, res) => {
     const token = generateToken(user);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      // sameSite: "none",
-      // path: "/",
+      secure: true, // Ensure this is set if using HTTPS
+      sameSite: "None", // Use None for cross-site cookies
     });
 
     console.log(token)
