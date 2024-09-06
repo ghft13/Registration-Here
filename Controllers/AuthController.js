@@ -83,10 +83,15 @@ const loginUser = async (req, res) => {
     return res.status(500).json({ message: "Server error", type: "error" });
   }
 };
-
 const logoutUser = (req, res) => {
-  res.cookie(token, "");
-  res.status(200).json({ message: "Logged out successfully" });
+  // Clear the 'token' cookie
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true, // Use true in production with HTTPS, false for local development
+    sameSite: "None", // Adjust depending on your setup
+  });
+
+  return res.status(200).json({ message: "Logged out successfully", type: "success" });
 };
 
 const BookAppointment = async (req, res) => {
