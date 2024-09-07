@@ -2,7 +2,7 @@ const User = require("../models/Usermodel");
 const Appointment = require("../models/Appointmentmodel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
+require("dotenv").config();
 
 const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
@@ -42,7 +42,6 @@ const registerUser = async (req, res) => {
     console.error("Error registering user:", error); // More descriptive logging
     res.status(500).json({ message: "Server error", type: "error" });
   }
-  
 };
 const loginUser = async (req, res) => {
   try {
@@ -63,19 +62,20 @@ const loginUser = async (req, res) => {
     }
 
     let token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username }, // Use user._id
       process.env.JWT_KEY,
-      { expiresIn: "1h" }
+      { expiresIn: "1h" } // Optional: set token expiry
     );
 
+    // Send token as a cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // Ensure this matches your environment
+      secure: true,
       sameSite: "strict",
       maxAge: 3600000, // 1 hour
     });
 
-    res.status(200).json({ message: "Login successful" ,type:"success"});
+    res.status(201).json({ message: "Login ghello", type: "success",token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -91,7 +91,7 @@ const logoutUser = (req, res) => {
 
   return res
     .status(200)
-    .json({ message: "Logged out successfully", type: "success" });
+    .json({ message: "Logged out successfully", type: "success",  });
 };
 
 const BookAppointment = async (req, res) => {
