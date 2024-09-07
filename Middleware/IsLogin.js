@@ -5,11 +5,11 @@ const IsLogin = async (req, res, next) => {
   console.log("Checking login status"); // Debugging statement
 
   try {
-    // if (!req.cookies.token) {
-    //   console.log("No token found"); // Debugging statement
-    //   req.flash("error", "You need to login first");
-    //   return res.status(401).json({ message: "You need to login first" });
-    // }
+    if (!req.cookies.token) {
+      console.log("No token found"); // Debugging statement
+      req.flash("error", "You need to login first");
+      return res.status(401).json({ message: "You need to login first" });
+    }
     const decoded = jwt.verify(req.cookies.token, process.env.JWT_KEY);
     const user = await UserModel.findOne({ email: decoded.email }).select(
       "-password"
