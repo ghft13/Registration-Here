@@ -18,7 +18,7 @@ const {
   logoutUser,
   BookAppointment,
 } = require("./Controllers/AuthController");
-const { IsLogin } = require("./Middleware/IsLogin");
+
 
 // Initialize the app
 const app = express();
