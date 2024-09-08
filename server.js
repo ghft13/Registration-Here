@@ -53,14 +53,11 @@ app.post("/api/auth/register", registerUser);
 
 app.post("/api/auth/login", loginUser);
 
-app.get("/api/profile", IsLogin, (req, res) => {
+app.get("/api/profile",  (req, res) => {
   res.status(200).json({ user: req.user.username, type: "success" });
 });
 
-app.post("/api/auth/book-appointment", IsLogin, (req, res) => {
-  BookAppointment(req, res);
-});
-
+app.post("/api/auth/book-appointment",BookAppointment)
 app.get("/api/auth/check-auth", (req, res) => {
   res.status(200).json({ authenticated: true });
 });
