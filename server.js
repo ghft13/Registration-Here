@@ -9,7 +9,7 @@ const flash = require("connect-flash");
 // Import Mongoose models
 const User = require("./models/Usermodel");
 const Appointment = require("./models/Appointmentmodel");
- const { IsLogin } = require("./Middleware/IsLogin");
+ const { IsLogin } = require('./Middleware/IsLogin')
 require("dotenv").config();
 
 const {
@@ -58,7 +58,11 @@ app.get("/api/profile",IsLogin, (req, res) => {
   res.status(200).json({ user: req.user.username, type: "success" });
 });
 
-app.post("/api/auth/book-appointment",IsLogin, BookAppointment);
+
+app.post("/api/auth/book-appointment", IsLogin, (req, res) => {
+  BookAppointment(req, res);
+});
+
 
 app.get("/api/auth/check-auth", (req, res) => {
   res.status(200).json({ authenticated: true });

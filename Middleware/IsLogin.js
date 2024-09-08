@@ -27,4 +27,4 @@ const isLogin = (req, res, next) => {
   }
 };
 
-module.exports = isLogin;
+module.exports = isLogin
