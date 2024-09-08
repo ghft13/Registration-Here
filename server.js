@@ -57,7 +57,11 @@ app.get("/api/profile",  (req, res) => {
   res.status(200).json({ user: req.user.username, type: "success" });
 });
 
-app.post("/api/auth/book-appointment",BookAppointment)
+app.post("/api/auth/book-appointment", IsLogin, (req, res) => {
+  // This route is now protected and accessible only if the user is authenticated
+  BookAppointment(req, res);
+});
+
 app.get("/api/auth/check-auth", (req, res) => {
   res.status(200).json({ authenticated: true });
 });

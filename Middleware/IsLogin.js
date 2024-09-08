@@ -16,15 +16,12 @@ const IsLogin = (req, res, next) => {
     // Attach the user information to the request object
     req.user = decoded;
 
-    // If token is valid, send success status (optional)
-    res.status(200).json({ message: "User is logged in", type: "success", user: req.user });
-
     // Proceed to the next middleware or route handler
-    next();
+    next();  // Call next() instead of sending a response here
   } catch (err) {
     // If there's an error verifying the token, respond with 401
     return res.status(401).json({ message: "Invalid token." });
   }
 };
 
-module.exports = IsLogin
+module.exports = IsLogin;
