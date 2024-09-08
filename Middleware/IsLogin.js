@@ -1,33 +1,30 @@
-const jwt = require("jsonwebtoken");
-const UserModel = require("../models/Usermodel");
+const jwt = require('jsonwebtoken');
 
-const IsLogin = async (req, res, next) => {
-  console.log("Checking login status"); // Debugging statement
-
+const isLogin = (req, res, next) => {
   try {
-    if (!req.cookies.token) {
-      console.log("No token found"); // Debugging statement
-      req.flash("error", "You need to login first");
-      return res.status(401).json({ message: "You need to login first" });
-    }
-    const decoded = jwt.verify(req.cookies.token, process.env.JWT_KEY);
-    const user = await UserModel.findOne({ email: decoded.email }).select(
-      "-password"
-    );
+    // Retrieve token from cookies
+    const token = req.cookies.token;
 
-    if (!user) {
-      console.log("User not found"); // Debugging statement
-      return res.status(401).json({ message: "User not found" });
+    // If no token, return an unauthorized response
+    if (!token) {
+      return res.status(401).json({ message: "Access denied. No token provided." });
     }
-    req.user = user; // Attach user object to req for use in route handlers
-    console.log("User authenticated");
-    res.status(201).json({message:"login successfull",type:"success",}) // Debugging statement
-    next(); // Proceed to the next middleware or route handler
+
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+
+    // Attach the user information to the request object
+    req.user = decoded;
+
+    // If token is valid, send success status (optional)
+    res.status(200).json({ message: "User is logged in", type: "success", user: req.user });
+
+    // Proceed to the next middleware or route handler
+    next();
   } catch (err) {
-    console.error("Error checking login:", err.message); // Log error for debugging
-    req.flash("error", "Something went wrong");
-    return res.status(500).json({ message: "Server error" });
+    // If there's an error verifying the token, respond with 401
+    return res.status(401).json({ message: "Invalid token." });
   }
 };
 
-module.exports = { IsLogin };
+module.exports = isLogin;
